@@ -291,6 +291,11 @@ p.searchRes {
         font-size: .8rem;
     }
     .modal-container {
+        position: absolute;
+        height: auto;
+        width: 80%;
+    }
+    .poster {
         display: none;
     }
     
