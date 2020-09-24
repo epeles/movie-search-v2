@@ -293,7 +293,8 @@ p.searchRes {
     .modal-container {
         position: absolute;
         height: auto;
-        width: 80%;
+        width: 95%;
+        top: 90%;
     }
     .poster {
         display: none;
