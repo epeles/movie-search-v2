@@ -138,13 +138,14 @@ form button {
 	top: 2%;
     left: 20%;
     bottom: 2%;
-	height: 90%;
+	height: 95%;
     width: 800px;
     z-index: 2;
 	transition: opacity 0.3s ease;
     pointer-events: none;
     /* transform: translateY(-200%);  */
     transition: transform 0.3s ease;
+    border-radius: 40px;
 }
 
 .modal-container.show {
@@ -153,26 +154,17 @@ form button {
 }
 
 .close-btn {
-    /* color: #ffffff; */
-    /* background: transparent; */
+    padding: 8px 30px;
+    opacity: .7;
+    /* border-radius: 40px; */
+    border-top-right-radius: 40px;
     font-size: 30px;
     position: absolute;
     top: 0;
     right: 0;
-    /* z-index: 999; */
+    cursor: pointer;
 
 }
-/* .modal {
-	background-color: #fff;
-	border-radius: 5px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-	padding: 30px 50px;
-	text-align: center;
-	width: 600px;
-	max-width: 100%;
-/* 	transform: translateY(-200%); */
-/* 	transition: transform 0.3s ease; */
- 
 
 .box {
     display: flex;
@@ -226,6 +218,7 @@ h1.title {
     width: max-content;
     position: relative;
     margin: 0 0 30px;
+    padding-top: 20px;
 }
 
 p.runtime {
