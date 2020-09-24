@@ -53,10 +53,6 @@ result.addEventListener('click', e => {
     }
 });
 
-/**
- * 
- * @param {string} movie 
- */
 async function getMovie(movie) {
     const res = await fetch(`${apiURL_movieSingle}${movie}`);
     const data = await res.json();
@@ -89,8 +85,15 @@ async function getMovie(movie) {
 
 // Hide modal
 modal.addEventListener('click', e => { 
-    if (e.target.id == 'close') modal.classList.remove('show')
+    if (e.target.id == 'close') modal.classList.remove('show');
 });
+
+// modal.onBlur = function() {
+//     if (modal.classList.contains('show')) {
+//         // console.log(true);
+//         modal.classList.remove('show');
+//     }
+// }
 
 function getClassByRate(vote) {
     if (vote >= 8) return "green";
