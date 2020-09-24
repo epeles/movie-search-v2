@@ -136,8 +136,8 @@ form button {
 	top: 2%;
     left: 20%;
     bottom: 2%;
-	height: 95%;
-    width: 70%;
+	height: 90%;
+    width: 75%;
     /* z-index: 2; */
 	transition: opacity 0.3s ease;
     pointer-events: none;
@@ -170,6 +170,7 @@ form button {
     top: 0;
     right: 0;
     cursor: pointer;
+    z-index: 3;
 }
 
 .box {
@@ -285,6 +286,9 @@ p.searchRes {
     }
     .movie-info h3 {
         font-size: .8rem;
+    }
+    .modal-container {
+        display: none;
     }
     
 }    
