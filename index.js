@@ -8,7 +8,7 @@ const more = document.querySelector('#more');
 const open = document.getElementById('open');
 const close = document.querySelector('#close');
 const modal = document.getElementById('modal_container');
-// const modal_content = document.querySelector('.modal');
+const modal_content = document.querySelector('.modal-content');
 
 const apiURL_movieList = 'https://www.omdbapi.com/?apikey=ac72a227&s='
 const apiURL_movieSingle = 'https://www.omdbapi.com/?apikey=ac72a227&i='
@@ -57,7 +57,7 @@ async function getMovie(movie) {
     const res = await fetch(`${apiURL_movieSingle}${movie}`);
     const data = await res.json();
     
-    modal.innerHTML = `
+    modal_content.innerHTML = `
         <button class="close-btn" id="close">&times;</button>
         <div class="box box0">
             <h1 class="title">${data.Title} 
@@ -88,12 +88,10 @@ modal.addEventListener('click', e => {
     if (e.target.id == 'close') modal.classList.remove('show');
 });
 
-// modal.onBlur = function() {
-//     if (modal.classList.contains('show')) {
-//         // console.log(true);
-//         modal.classList.remove('show');
-//     }
-// }
+window.addEventListener('click', e => {
+    if (e.target == modal) modal.classList.remove('show');
+});
+
 
 function getClassByRate(vote) {
     if (vote >= 8) return "green";
