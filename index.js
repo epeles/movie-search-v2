@@ -3,10 +3,6 @@
 const form = document.querySelector('#form');
 const search = document.querySelector('#search');
 const result = document.querySelector('#result');
-const more = document.querySelector('#more');
-
-const open = document.getElementById('open');
-const close = document.querySelector('#close');
 const modal = document.getElementById('modal_container');
 const modal_content = document.querySelector('.modal-content');
 
@@ -23,6 +19,7 @@ form.addEventListener('submit', e => {
     }
 })
 
+//Fetch results from user input 
 async function getList(title) {    
     const res = await fetch(`${apiURL_movieList}${title}`);
     const data = await res.json();
@@ -33,7 +30,7 @@ async function getList(title) {
         .filter(t => (t.Poster !== 'N/A' && t.Type === 'movie' || t.Poster !== 'N/A' && t.Type === 'series'))
         .map(movie => `
         <div class="movie">
-            <img class="poster_img" src="${movie.Poster}" alt="${movie.Title}" data-movietitle="${movie.imdbID}"/>
+            <img class="poster_img" src="${movie.Poster}" alt="${movie.Title}" data-movieid="${movie.imdbID}"/>
             <div class="movie-info">
                 <h3>${movie.Title}</h3>
             </div>
@@ -42,19 +39,20 @@ async function getList(title) {
     `;
 }    
  
+//When clicked on poster, pass the movie_id argument to getMovie function to show the movie  
 result.addEventListener('click', e => {
     const clickedEl = e.target;
     if (clickedEl.tagName === 'IMG') {
-      const movieName = clickedEl.dataset.movietitle;
-      //OR const movieName = clickedEl.getAttribute('data-movietitle');
+      const movie_id = clickedEl.dataset.movieid;
+      //OR const movie_id = clickedEl.getAttribute('data-movieid');
       modal.classList.add('show');
-      getMovie(movieName);
-      
+      getMovie(movie_id);
     }
 });
 
-async function getMovie(movie) {
-    const res = await fetch(`${apiURL_movieSingle}${movie}`);
+//Fetch the movie by ID when called from click Event Listener
+async function getMovie(movie_id) {
+    const res = await fetch(`${apiURL_movieSingle}${movie_id}`);
     const data = await res.json();
     
     modal_content.innerHTML = `
@@ -83,22 +81,23 @@ async function getMovie(movie) {
     `;   
 }
 
-// Hide modal
+// Hide modal when click on close button
 modal.addEventListener('click', e => { 
-    if (e.target.id == 'close') modal.classList.remove('show');
+    if (e.target.id === 'close') modal.classList.remove('show');
 });
-
+//Hide modal when clicking outside the modal 
 window.addEventListener('click', e => {
-    if (e.target == modal) modal.classList.remove('show');
+    if (e.target === modal) modal.classList.remove('show');
 });
 
-
+//Coloring the rates depending of the number 
 function getClassByRate(vote) {
     if (vote >= 8) return "green";
     else if (vote >= 5) return "orange";
     else return "red";
 }
 
+//take the number in minutes and convert to a friendly view (ie: instead of 140min, convert to 2h 20min )
 function time_convert(num) {
     if (parseInt(num) > 60) return `${Math.floor(parseInt(num) / 60)}h ${parseInt(num) % 60}min`;
     else return num;         
