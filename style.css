@@ -84,7 +84,7 @@ form button {
 .container {
     margin: 30px auto;
     max-width: 100%;
-    width: 800px;
+    width: 1000px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -152,7 +152,7 @@ form button {
 }
 
 .modal-container.show {
-    /* animation: modal .3s ease-in; */
+    animation: modal .3s ease-in;
 	display: block;
 	pointer-events: auto;
 }
@@ -160,11 +160,11 @@ form button {
 @keyframes modal {
     from {
         /* opacity: 0; */
-        transform: translateY(0);
+        transform: translateY(-50%);
     }
     to {
         /* opacity: 1; */
-        transform: translateY(-50%);
+        transform: translateY(0);
     }
 }
 
@@ -231,10 +231,10 @@ img.imdb {
 }
 
 h1.title {
-    width: max-content;
+    width: auto;
     position: relative;
     margin: 0 0 30px;
-    padding-top: 20px;
+    padding: 20px 30px;
 }
 
 p.runtime {
@@ -243,6 +243,7 @@ p.runtime {
     left: 0;
     font-weight: lighter;
     width: inherit;
+    padding: 0 30px;
 }
 
 img.poster {
@@ -279,6 +280,46 @@ p.searchRes {
     margin-bottom: 35px;
 }
 
+.loader {
+    opacity: 0;
+    display: flex;
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transition: opacity 0.3s ease-in;
+}
+  
+.loader.show {
+    opacity: 1;
+}
+  
+.circle {
+    background-color: #fff;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 5px;
+    animation: bounce 0.5s ease-in infinite;
+}
+  
+.circle:nth-of-type(2) {
+    animation-delay: 0.1s;
+}
+  
+.circle:nth-of-type(3) {
+    animation-delay: 0.2s;
+}
+  
+@keyframes bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+  
+    50% {
+      transform: translateY(-10px);
+    }
+}
 
 @media all and (max-width: 600px) {
     .box1 {

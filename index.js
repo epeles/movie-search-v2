@@ -5,6 +5,10 @@ const search = document.querySelector('#search');
 const result = document.querySelector('#result');
 const modal = document.getElementById('modal_container');
 const modal_content = document.querySelector('.modal-content');
+const loading = document.querySelector('.loader');
+
+let page = 1;
+var movieName = '';
 
 const apiURL_movieList = 'https://www.omdbapi.com/?apikey=ac72a227&s='
 const apiURL_movieSingle = 'https://www.omdbapi.com/?apikey=ac72a227&i='
@@ -21,11 +25,11 @@ form.addEventListener('submit', e => {
 
 //Fetch results from user input 
 async function getList(title) {    
-    const res = await fetch(`${apiURL_movieList}${title}`);
+    const res = await fetch(`${apiURL_movieList}${title}&page=${page}`);
     const data = await res.json();
     
-    result.innerHTML = `
-    <p class="searchRes">Results for "${title}"</p>
+    result.innerHTML += `
+    <p class="searchRes" data-results="${title}">Results for "${title}"</p>
     ${data.Search
         .filter(t => (t.Poster !== 'N/A' && t.Type === 'movie' || t.Poster !== 'N/A' && t.Type === 'series'))
         .map(movie => `
@@ -39,6 +43,26 @@ async function getList(title) {
     `;
 }    
  
+window.addEventListener('scroll', () => {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  
+    if (scrollTop + clientHeight >= scrollHeight - 5) {
+      showLoading();
+    }
+});
+
+function showLoading() {
+   loading.classList.add('show');
+   setTimeout(() => {
+     loading.classList.remove('show');
+      const searchRes = document.querySelector('.searchRes');  
+      setTimeout(() => {
+        page++;
+        getList(searchRes.dataset.results);
+      }, 300);
+   }, 1000);
+}  
+
 //When clicked on poster, pass the movie_id argument to getMovie function to show the movie  
 result.addEventListener('click', e => {
     const clickedEl = e.target;
