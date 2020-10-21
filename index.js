@@ -8,7 +8,6 @@ const modal_content = document.querySelector('.modal-content');
 const loading = document.querySelector('.loader');
 
 let page = 1;
-var movieName = '';
 
 const apiURL_movieList = 'https://www.omdbapi.com/?apikey=ac72a227&s='
 const apiURL_movieSingle = 'https://www.omdbapi.com/?apikey=ac72a227&i='
@@ -24,23 +23,27 @@ form.addEventListener('submit', e => {
 })
 
 //Fetch results from user input 
-async function getList(title) {    
-    const res = await fetch(`${apiURL_movieList}${title}&page=${page}`);
-    const data = await res.json();
-    
-    result.innerHTML += `
-    <p class="searchRes" data-results="${title}">Results for "${title}"</p>
-    ${data.Search
-        .filter(t => (t.Poster !== 'N/A' && t.Type === 'movie' || t.Poster !== 'N/A' && t.Type === 'series'))
-        .map(movie => `
-        <div class="movie">
-            <img class="poster_img" src="${movie.Poster}" alt="${movie.Title}" data-movieid="${movie.imdbID}"/>
-            <div class="movie-info">
-                <h3>${movie.Title}</h3>
-            </div>
-        </div>`)             
-        .join('')}
-    `;
+async function getList(title) {
+    try {
+        const res = await fetch(`${apiURL_movieList}${title}&page=${page}`);
+        const data = await res.json();
+
+        result.innerHTML += `
+        <p class="searchRes" data-results="${title}">Results for "${title}"</p>
+        ${data.Search
+            .filter(t => (t.Poster !== 'N/A' && t.Type === 'movie' || t.Poster !== 'N/A' && t.Type === 'series'))
+            .map(movie => `
+                <div class="movie">
+                    <img class="poster_img" src="${movie.Poster}" alt="${movie.Title}" data-movieid="${movie.imdbID}"/>
+                    <div class="movie-info">
+                        <h3>${movie.Title}</h3>
+                    </div>
+                </div>`)             
+            .join('')}
+        `;
+    } catch(err) {
+        result.innerHTML = err;
+    }    
 }    
  
 window.addEventListener('scroll', () => {
@@ -55,8 +58,8 @@ function showLoading() {
    loading.classList.add('show');
    setTimeout(() => {
      loading.classList.remove('show');
-      const searchRes = document.querySelector('.searchRes');  
-      setTimeout(() => {
+     const searchRes = document.querySelector('.searchRes');  
+     setTimeout(() => {
         page++;
         getList(searchRes.dataset.results);
       }, 300);
@@ -114,7 +117,7 @@ window.addEventListener('click', e => {
     if (e.target === modal) modal.classList.remove('show');
 });
 
-//Coloring the rates depending of the number 
+//Color the rates depending of the number 
 function getClassByRate(vote) {
     if (vote >= 8) return "green";
     else if (vote >= 5) return "orange";
