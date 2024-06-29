@@ -8,6 +8,7 @@ const modal_content = document.querySelector('.modal-content');
 const loading = document.querySelector('.loader');
 
 let page = 1;
+let resultsForAdded = false; // Adiciona uma variável para rastrear se o texto "Results for" já foi adicionado
 
 const apiURL_movieList = 'https://www.omdbapi.com/?apikey=ac72a227&s='
 const apiURL_movieSingle = 'https://www.omdbapi.com/?apikey=ac72a227&i='
@@ -15,21 +16,30 @@ const apiURL_movieSingle = 'https://www.omdbapi.com/?apikey=ac72a227&i='
 form.addEventListener('submit', e => {
     e.preventDefault();
     const searchMovie = search.value.trim();
-    if(!searchMovie) alert('Please type in a search movie');
+    if (!searchMovie) alert('Please type in a search movie');
     else {
         form.reset();
+        resultsForAdded = false; // Reseta a variável ao fazer uma nova busca
+        result.innerHTML = ''; // Limpa os resultados anteriores
+        page = 1; // Reseta a página ao fazer uma nova busca
         getList(searchMovie);
     }
-})
+});
 
-//Fetch results from user input 
+// Fetch results from user input 
 async function getList(title) {
     try {
         const res = await fetch(`${apiURL_movieList}${title}&page=${page}`);
         const data = await res.json();
 
+        // Adiciona o texto "Results for" apenas uma vez
+        if (!resultsForAdded) {
+            result.innerHTML += `
+            <p class="searchRes" data-results="${title}">Results for "${title}"</p>`;
+            resultsForAdded = true;
+        }
+
         result.innerHTML += `
-        <p class="searchRes" data-results="${title}">Results for "${title}"</p>
         ${data.Search
             .filter(t => (t.Poster !== 'N/A' && t.Type === 'movie' || t.Poster !== 'N/A' && t.Type === 'series'))
             .map(movie => `
@@ -38,50 +48,50 @@ async function getList(title) {
                     <div class="movie-info">
                         <h3>${movie.Title}</h3>
                     </div>
-                </div>`)             
+                </div>`)
             .join('')}
         `;
-    } catch(err) {
+    } catch (err) {
         result.innerHTML = err;
-    }    
-}    
- 
+    }
+}
+
 window.addEventListener('scroll', () => {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-  
+
     if (scrollTop + clientHeight >= scrollHeight - 5) {
-      showLoading();
+        showLoading();
     }
 });
 
 function showLoading() {
-   loading.classList.add('show');
-   setTimeout(() => {
-     loading.classList.remove('show');
-     const searchRes = document.querySelector('.searchRes');  
-     setTimeout(() => {
-        page++;
-        getList(searchRes.dataset.results);
-      }, 300);
-   }, 1000);
-}  
+    loading.classList.add('show');
+    setTimeout(() => {
+        loading.classList.remove('show');
+        const searchRes = document.querySelector('.searchRes');
+        setTimeout(() => {
+            page++;
+            getList(searchRes.dataset.results);
+        }, 300);
+    }, 1000);
+}
 
-//When clicked on poster, pass the movie_id argument to getMovie function to show the movie  
+// When clicked on poster, pass the movie_id argument to getMovie function to show the movie  
 result.addEventListener('click', e => {
     const clickedEl = e.target;
     if (clickedEl.tagName === 'IMG') {
-      const movie_id = clickedEl.dataset.movieid;
-      //OR const movie_id = clickedEl.getAttribute('data-movieid');
-      modal.classList.add('show');
-      getMovie(movie_id);
+        const movie_id = clickedEl.dataset.movieid;
+        // OR const movie_id = clickedEl.getAttribute('data-movieid');
+        modal.classList.add('show');
+        getMovie(movie_id);
     }
 });
 
-//Fetch the movie by ID when called from click Event Listener
+// Fetch the movie by ID when called from click Event Listener
 async function getMovie(movie_id) {
     const res = await fetch(`${apiURL_movieSingle}${movie_id}`);
     const data = await res.json();
-    
+
     modal_content.innerHTML = `
         <button class="close-btn" id="close">&times;</button>
         <div class="box box0">
@@ -105,27 +115,27 @@ async function getMovie(movie_id) {
                 <li><a href="https://imdb.com/title/${data.imdbID}" target="_blank"><img class="imdb" src="https://www.iconninja.com/files/627/873/110/imdb-icon.png" data-toggle="tooltip" data-html="true" title="More info about ${data.Title} on IMDb"></a></li>
             </ul>
         </div>    
-    `;   
+    `;
 }
 
 // Hide modal when click on close button
-modal.addEventListener('click', e => { 
+modal.addEventListener('click', e => {
     if (e.target.id === 'close') modal.classList.remove('show');
 });
-//Hide modal when clicking outside the modal 
+// Hide modal when clicking outside the modal 
 window.addEventListener('click', e => {
     if (e.target === modal) modal.classList.remove('show');
 });
 
-//Color the rates depending of the number 
+// Color the rates depending of the number 
 function getClassByRate(vote) {
     if (vote >= 8) return "green";
     else if (vote >= 5) return "orange";
     else return "red";
 }
 
-//take the number in minutes and convert to a friendly view (ie: instead of 140min, convert to 2h 20min )
+// Take the number in minutes and convert to a friendly view (ie: instead of 140min, convert to 2h 20min)
 function time_convert(num) {
     if (parseInt(num) > 60) return `${Math.floor(parseInt(num) / 60)}h ${parseInt(num) % 60}min`;
-    else return num;         
+    else return num;
 }
